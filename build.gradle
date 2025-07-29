@@ -7,23 +7,22 @@ plugins {
 
 repositories {
     maven { url "https://frcmaven.wpi.edu/artifactory/release/" }
+    mavenCentral()
 }
 
 dependencies {
     implementation "edu.wpi.first.ntcore:ntcore-java:2025.3.2"
     implementation "edu.wpi.first.wpiutil:wpiutil-java:2025.3.2"
-    
     implementation 'com.fasterxml.jackson.core:jackson-core:2.17.1'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.1'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.17.1'
 
-    // Add ntcore-jni for runtimeOnly. We are adding all supported platforms
-    // so that our application will work on all supported platforms.
+    // Native libraries for all platforms (add more if needed)
     runtimeOnly "edu.wpi.first.ntcore:ntcore-jni:2025.3.2:windowsx86-64"
 }
 
 application {
-    mainClass = 'WolfRecieve' // Update if package name changes
+    mainClass = 'WolfRecieve'
 }
 
 java {
@@ -32,12 +31,21 @@ java {
 }
 
 javafx {
-    version = "17" // or "22" for the latest
+    version = "17"
     modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics' ]
 }
 
+// Ensure native libraries are found at runtime
 run {
-    jvmArgs = [
-        "-Djava.library.path=${project.buildDir}/libs"
-    ]
+    doFirst {
+        jvmArgs = ["-Djava.library.path=${projectDir}/libs"]
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+    }
 }

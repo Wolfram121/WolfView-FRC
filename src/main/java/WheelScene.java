@@ -6,122 +6,77 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Cylinder;
 import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 
 public class WheelScene extends Application {
-
-    private double cameraAngleX = 180; // initial downward tilt
-    private double cameraAngleY = 0; // initial sideways pan
-    private double camerAngleZ = 0;
-    private final Rotate rotateX = new Rotate(cameraAngleX, Rotate.X_AXIS);
-    private final Rotate rotateY = new Rotate(cameraAngleY, Rotate.Y_AXIS);
-    private final Rotate rotateZ = new Rotate(camerAngleZ, Rotate.Z_AXIS);
-
-    private final double[] lastMousePosition = new double[2];
-
-    private static Cylinder[] wheels = new Cylinder[4];
+    static final java.util.concurrent.CountDownLatch READY = new java.util.concurrent.CountDownLatch(1);
+    private final Rotate rotateX = new Rotate(180, Rotate.X_AXIS);
+    private final Rotate rotateY = new Rotate(0, Rotate.Y_AXIS);
+    private final Rotate rotateZ = new Rotate(0, Rotate.Z_AXIS);
+    private final double[] lastMouse = new double[2];
+    private static final Cylinder[] wheels = new Cylinder[4];
+    private static final double SPACING = 100;
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage stage) {
         Group root = new Group();
-
-        // Create material for the wheels
         PhongMaterial wheelMaterial = new PhongMaterial(Color.DARKGRAY);
-
-        // Create four wheels and position them in a square
-        double spacing = 100;
-        wheels[0] = createWheel(-spacing, -spacing, wheelMaterial);
-        wheels[1] = createWheel(spacing, -spacing, wheelMaterial);
-        wheels[2] = createWheel(-spacing, spacing, wheelMaterial);
-        wheels[3] = createWheel(spacing, spacing, wheelMaterial);
-
+        wheels[0] = createWheel(SPACING, SPACING, wheelMaterial);
+        wheels[1] = createWheel(-SPACING, SPACING, wheelMaterial);
+        wheels[2] = createWheel(-SPACING, -SPACING, wheelMaterial);
+        wheels[3] = createWheel(SPACING, -SPACING, wheelMaterial);
         root.getChildren().addAll(wheels);
-
-        // Camera setup
         PerspectiveCamera camera = new PerspectiveCamera(true);
         camera.setNearClip(0.1);
-        camera.setFarClip(10000.0);
+        camera.setFarClip(10000);
         camera.setFieldOfView(50);
         camera.setTranslateZ(300);
         camera.getTransforms().addAll(rotateX, rotateY, rotateZ);
-
         Scene scene = new Scene(root, 800, 600, true);
         scene.setFill(Color.LIGHTBLUE);
         scene.setCamera(camera);
-
-        primaryStage.setTitle("Wheel Square Simulation");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-
-        // Animation for rotating wheels
-        // new AnimationTimer() {
-        // @Override
-        // public void handle(long now) {
-        // for (Cylinder wheel : wheels) {
-        // wheel.setRotate(wheel.getRotate() + 1);
-        // }
-        // }
-        // }.start();
-        final double[] lastMousePosition = new double[2];
-
+        stage.setTitle("Wheel Telemetry Viewer");
+        stage.setScene(scene);
+        stage.show();
         scene.setOnMousePressed(e -> {
-            lastMousePosition[0] = e.getSceneX();
-            lastMousePosition[1] = e.getSceneY();
+            lastMouse[0] = e.getSceneX();
+            lastMouse[1] = e.getSceneY();
         });
         scene.setOnMouseDragged(e -> {
-            double dx = e.getSceneX() - lastMousePosition[0];
-            double dy = e.getSceneY() - lastMousePosition[1];
-
+            double dx = e.getSceneX() - lastMouse[0];
+            double dy = e.getSceneY() - lastMouse[1];
             if (e.isPrimaryButtonDown()) {
-                // Left mouse: pan
                 camera.setTranslateX(camera.getTranslateX() - dx * 0.5);
                 camera.setTranslateY(camera.getTranslateY() - dy * 0.5);
             } else if (e.isMiddleButtonDown()) {
-                // Middle mouse: rotate
-                cameraAngleY += dx * 0.2;
-                cameraAngleX -= dy * 0.2;
-
-                rotateX.setAngle(cameraAngleX);
-                rotateY.setAngle(cameraAngleY);
+                rotateY.setAngle(rotateY.getAngle() + dx * 0.2);
+                rotateX.setAngle(rotateX.getAngle() - dy * 0.2);
             }
-
-            lastMousePosition[0] = e.getSceneX();
-            lastMousePosition[1] = e.getSceneY();
+            lastMouse[0] = e.getSceneX();
+            lastMouse[1] = e.getSceneY();
         });
         scene.setOnScroll(e -> {
-            double zoomFactor = 20; // tweak sensitivity here
-            double delta = e.getDeltaY();
-
-            camera.setTranslateZ(camera.getTranslateZ() + delta * zoomFactor / 40);
+            camera.setTranslateZ(camera.getTranslateZ() + e.getDeltaY() * 0.5);
         });
+        READY.countDown();
     }
 
     private Cylinder createWheel(double x, double y, PhongMaterial material) {
         Cylinder wheel = new Cylinder(40, 20);
         wheel.setMaterial(material);
-        wheel.getTransforms().addAll(
-                new Translate(x, y, 0)
-        // new Rotate(90, Rotate.X_AXIS) // Rotated to lie flat
-        );
+        wheel.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
+        wheel.setTranslateX(x);
+        wheel.setTranslateY(y);
         return wheel;
     }
 
-    public static void updateWheels(double r1, double r2, double r3, double r4, double angle1, double angle2, double angle3, double angle4) {
-        double[] redValues = {r1, r2, r3, r4};
-        double[] angles = {angle1, angle2, angle3, angle4};
-
+    public static void updateWheels(double[] reds, double[] angles) {
         for (int i = 0; i < 4; i++) {
-            // Clamp red color between 0 and 1
-            double red = Math.max(0, Math.min(1.0, redValues[i]));
-            PhongMaterial mat = new PhongMaterial();
-            mat.setDiffuseColor(Color.color(red, 0, 0));
-
+            double red = Math.max(0, Math.min(1.0, reds[i]));
+            PhongMaterial mat = new PhongMaterial(Color.color(red, 0, 0));
             wheels[i].setMaterial(mat);
-
-            // Apply rotation around Z axis
-            wheels[i].setRotationAxis(Rotate.Z_AXIS);
-            wheels[i].setRotate(angles[i]);
+            wheels[i].getTransforms().removeIf(t -> t instanceof Rotate && ((Rotate)t).getAxis().equals(Rotate.X_AXIS));
+            wheels[i].getTransforms().add(new Rotate(angles[i] - 90.0, Rotate.X_AXIS));
         }
     }
 
