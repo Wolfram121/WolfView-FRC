@@ -23,7 +23,6 @@ public class WolfRecieve {
         }
         final int TYPE = Integer.parseInt(args[0]);
         final int TYPE2 = Integer.parseInt(args[1]);
-        final String INPUT_PATH = "./records/" + args[2] + ".json";
         
         if (TYPE != 3) {
             new Thread(() -> Application.launch(WolfScene.class), "FX-Launcher").start();
@@ -88,6 +87,7 @@ public class WolfRecieve {
                 Platform.runLater(() -> WolfScene.updateWheels(reds, angles));
             }, 0, 20, java.util.concurrent.TimeUnit.MILLISECONDS);
         } else if (TYPE == 2) {
+            final String INPUT_PATH = "./records/" + args[2] + ".json";
             JSONArray replayArray;
             try {
                 String content = java.nio.file.Files.readString(java.nio.file.Paths.get(INPUT_PATH));
