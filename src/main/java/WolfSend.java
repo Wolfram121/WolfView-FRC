@@ -23,7 +23,7 @@ public class WolfSend {
                 t.getEntry("RFR").setDouble(rand.nextDouble());
                 t.getEntry("status").setString(rand.nextBoolean() ? "OK" : "WARN");
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(20);
                 } catch (InterruptedException e) {
                     break;
                 }
