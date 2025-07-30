@@ -1,6 +1,7 @@
+import java.util.Random;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import java.util.Random;
 
 public class WolfSend {
     public WolfSend() {
@@ -13,8 +14,8 @@ public class WolfSend {
             Random rand = new Random();
             while (true) {
                 t.getEntry("LFD").setDouble(0);
-                t.getEntry("LBD").setDouble(45);
-                t.getEntry("RBD").setDouble(90);
+                t.getEntry("LBD").setDouble(0);
+                t.getEntry("RBD").setDouble(0);
                 t.getEntry("RFD").setDouble(rand.nextDouble() * 360);
                 t.getEntry("LFR").setDouble(rand.nextDouble());
                 t.getEntry("LBR").setDouble(rand.nextDouble());

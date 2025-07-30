@@ -1,22 +1,20 @@
-import javafx.application.Application;
-import javafx.application.Platform;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import javafx.application.Application;
+import javafx.application.Platform;
 
 public class WolfRecieve {
     public static void main(String[] args) throws Exception {
         new Thread(() -> Application.launch(WheelScene.class), "FX-Launcher").start();
 
-        // Wait deterministically, not with Thread.sleep
         WheelScene.READY.await();
 
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
         inst.startClient4("TelemetryClient");
         inst.setServerTeam(9289);
         inst.startDSClient();
-
         NetworkTable t = inst.getTable("BotTelemetry");
-        new WolfSend(); // <-- make this use getDefault() too
+        new WolfSend();
 
         java.util.concurrent.ScheduledExecutorService exec =
             java.util.concurrent.Executors.newSingleThreadScheduledExecutor();

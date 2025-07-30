@@ -70,7 +70,7 @@ goto fail
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%APP_HOME%\lib\WolfTelemetryClient.jar;%APP_HOME%\lib\ntcore-java-2025.3.2.jar;%APP_HOME%\lib\wpiutil-java-2025.3.2.jar;%APP_HOME%\lib\jackson-annotations-2.17.1.jar;%APP_HOME%\lib\jackson-databind-2.17.1.jar;%APP_HOME%\lib\jackson-core-2.17.1.jar;%APP_HOME%\lib\javafx-fxml-17-win.jar;%APP_HOME%\lib\javafx-controls-17-win.jar;%APP_HOME%\lib\javafx-graphics-17-win.jar;%APP_HOME%\lib\ntcore-jni-2025.3.2-windowsx86-64.jar;%APP_HOME%\lib\javafx-base-17-win.jar
+set CLASSPATH=%APP_HOME%\lib\WolfTelemetryClient.jar;%APP_HOME%\lib\ntcore-java-2025.3.2.jar;%APP_HOME%\lib\wpiutil-java-2025.3.2.jar;%APP_HOME%\lib\jackson-annotations-2.17.1.jar;%APP_HOME%\lib\jackson-databind-2.17.1.jar;%APP_HOME%\lib\jackson-core-2.17.1.jar;%APP_HOME%\lib\json-20250517.jar;%APP_HOME%\lib\javafx-fxml-17-win.jar;%APP_HOME%\lib\javafx-controls-17-win.jar;%APP_HOME%\lib\javafx-graphics-17-win.jar;%APP_HOME%\lib\ntcore-jni-2025.3.2-windowsx86-64.jar;%APP_HOME%\lib\javafx-base-17-win.jar
 
 
 @rem Execute WolfTelemetryClient
