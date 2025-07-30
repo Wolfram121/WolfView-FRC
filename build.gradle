@@ -6,8 +6,8 @@ plugins {
 }
 
 repositories {
-    maven { url "https://frcmaven.wpi.edu/artifactory/release/" }
-    mavenCentral()
+    // maven { url "https://frcmaven.wpi.edu/artifactory/release/" }
+    // mavenCentral()
     flatDir {
         dirs "${projectDir}/libs"
     }
@@ -16,6 +16,7 @@ repositories {
 dependencies {
     implementation "edu.wpi.first.ntcore:ntcore-java:2025.3.2"
     implementation "edu.wpi.first.wpiutil:wpiutil-java:2025.3.2"
+    //DOWNLOAD
     implementation 'com.fasterxml.jackson.core:jackson-core:2.17.1'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.1'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.17.1'
@@ -51,4 +52,14 @@ sourceSets {
             srcDirs = ['src/main/java']
         }
     }
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'WolfRecieve'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

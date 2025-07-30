@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.FileWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,11 +17,18 @@ public class WolfRecieve {
     static String FILE_PATH;
 
     public static void main(String[] args) throws Exception {
-        final int TYPE = 2;
-        final String INPUT_PATH = "./records/" + "29-07-2025_23-00-18" + ".json";
+        if (args.length < 2) {
+            System.out.println("Usage: run <TYPE: 1=live, 2=replay> <TYPE2: 1=send, 0=nosend>");
+            return;
+        }
+        final int TYPE = Integer.parseInt(args[0]);
+        final int TYPE2 = Integer.parseInt(args[1]);
+        final String INPUT_PATH = "./records/" + args[2] + ".json";
         
-        new Thread(() -> Application.launch(WolfScene.class), "FX-Launcher").start();
-        WolfScene.READY.await();
+        if (TYPE != 3) {
+            new Thread(() -> Application.launch(WolfScene.class), "FX-Launcher").start();
+            WolfScene.READY.await();
+        }
 
         if (TYPE == 1) {
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss"));
@@ -31,7 +39,9 @@ public class WolfRecieve {
             inst.setServerTeam(9289);
             inst.startDSClient();
             NetworkTable t = inst.getTable("BotTelemetry");
-            new WolfSend();
+            if (TYPE2 == 1) {
+                new WolfSend();
+            }
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try (FileWriter fw = new FileWriter(FILE_PATH)) {
@@ -115,6 +125,23 @@ public class WolfRecieve {
 
                 Platform.runLater(() -> WolfScene.updateWheels(reds, angles));
             }, 0, 20, java.util.concurrent.TimeUnit.MILLISECONDS);
+        } else if (TYPE == 3) {
+            File recordsDir = new File("./records");
+            if (!recordsDir.exists() || !recordsDir.isDirectory()) {
+                System.out.println("Records directory does not exist or is not a directory.");
+                return;
+            }
+
+            String[] files = recordsDir.list((dir, name) -> name.endsWith(".json"));
+            if (files == null || files.length == 0) {
+                System.out.println("No JSON files found in records directory.");
+                return;
+            }
+
+            System.out.println("Available record files:");
+            for (String file : files) {
+                System.out.println(" - " + file);
+            }
         }
     }
 }
