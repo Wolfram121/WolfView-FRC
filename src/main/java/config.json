@@ -1,0 +1,16 @@
+{
+    "table-name": "BotTelemetry",
+    "angles" : [
+        "LFD",
+        "LBD",
+        "RFD",
+        "RBD"
+    ],
+    "reds":[
+        "LFR",
+        "LBR",
+        "RFR",
+        "RBR"
+    ],
+    "team-number" : 9289
+}

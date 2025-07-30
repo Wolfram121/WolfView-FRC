@@ -1,0 +1,48 @@
+# Java class files
+*.class
+
+# Package files
+*.jar
+*.war
+*.ear
+
+# Generated files
+bin/
+build/
+out/
+target/
+
+# IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# NetBeans
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+
+#Machine-specific
+gradle.properties

@@ -1,15 +1,28 @@
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import javafx.application.Application;
 import javafx.application.Platform;
+
+import java.util.List;
+
+//Config structure
+public class Config {
+    public String tableName; // maps to "table-name"
+    public List<String> angles;
+    public List<String> reds;
+    public int teamNumber;   // maps to "team-number"
+}
+
 
 public class WolfRecieve {
     static JSONArray jsonArray = new JSONArray();
@@ -34,10 +47,18 @@ public class WolfRecieve {
             FILE_PATH = "./records/" + timestamp + ".json";
 
             NetworkTableInstance inst = NetworkTableInstance.getDefault();
+
+            
+            //Read config.json
+            ObjectMapper mapper = new ObjectMapper();
+            Config config = mapper.readValue(new File("config.json"), Config.class);
+
+
+
             inst.startClient4("TelemetryClient");
             inst.setServerTeam(9289);
             inst.startDSClient();
-            NetworkTable t = inst.getTable("BotTelemetry");
+            NetworkTable t = inst.getTable(config.tableName); //Get NT table as configured in config.json
             if (TYPE2 == 1) {
                 new WolfSend();
             }
@@ -56,16 +77,16 @@ public class WolfRecieve {
 
             exec.scheduleAtFixedRate(() -> {
                 double[] angles = {
-                        t.getEntry("LFD").getDouble(0.0),
-                        t.getEntry("LBD").getDouble(0.0),
-                        t.getEntry("RBD").getDouble(0.0),
-                        t.getEntry("RFD").getDouble(0.0)
+                        t.getEntry(config.angles.get(0)).getDouble(0.0),
+                        t.getEntry(config.angles.get(1)).getDouble(0.0),
+                        t.getEntry(config.angles.get(2)).getDouble(0.0),
+                        t.getEntry(config.angles.get(3)).getDouble(0.0)
                 };
                 double[] reds = {
-                        t.getEntry("LFR").getDouble(0.0),
-                        t.getEntry("LBR").getDouble(0.0),
-                        t.getEntry("RBR").getDouble(0.0),
-                        t.getEntry("RFR").getDouble(0.0)
+                        t.getEntry(config.reds.get(0)).getDouble(0.0),
+                        t.getEntry(config.reds.get(1)).getDouble(0.0),
+                        t.getEntry(config.reds.get(2)).getDouble(0.0),
+                        t.getEntry(config.reds.get(3)).getDouble(0.0)
                 };
 
                 JSONObject entry = new JSONObject();
