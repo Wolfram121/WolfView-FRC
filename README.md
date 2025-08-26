@@ -19,7 +19,7 @@ WolfView is a Java-based application for visualizing and recording telemetry dat
 - JavaFX 17
 - NetworkTables library
 
-##Notes
+## Notes
 
 - Please credit me (Wolfram121) if you are taking this code.
 - :3
