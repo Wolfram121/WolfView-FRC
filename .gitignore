@@ -44,5 +44,4 @@ Thumbs.db
 # Environment
 .env
 
-#Machine-specific
 gradle.properties
