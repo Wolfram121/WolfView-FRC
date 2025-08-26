@@ -14,10 +14,9 @@ WolfView is a Java-based application for visualizing and recording telemetry dat
 
 ## Requirements
 
-- Java 17 or higher (Tested on JDK 24)
+- Java 24 or higher
+- WPILib JDK
 - Gradle
-- JavaFX 17
-- NetworkTables library
 
 ## Notes
 
